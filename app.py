@@ -17,7 +17,7 @@ MODEL_FILENAME = "model_production.keras"
 MODEL_PATH = os.path.join(MODEL_FOLDER, MODEL_FILENAME)
 
 IMG_SIZE = 224
-CLASS_NAMES = ['Automobile', 'Bird', 'Dog'] 
+CLASS_NAMES = ['Dog', 'Automobile', 'Bird']
 
 app = FastAPI(title="SOTA Production API", version="2.0.0")
 model = None
@@ -49,7 +49,13 @@ async def startup_event():
 def process_image(image_bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     img = img.resize((IMG_SIZE, IMG_SIZE), Image.BICUBIC)
-    return np.expand_dims(np.array(img).astype(np.float32), axis=0)
+    
+    # 1. Convertir a float
+    img_array = np.array(img).astype(np.float32)
+    # 2. Normalizar de 0-255 a 0-1
+    img_array = img_array / 255.0  
+    
+    return np.expand_dims(img_array, axis=0)
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
