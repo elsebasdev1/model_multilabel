@@ -7,6 +7,8 @@ from PIL import Image
 from fastapi import FastAPI, File, UploadFile, HTTPException
 import tensorflow as tf
 from tensorflow import keras
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, JSONResponse
 
 # Configuración del Modelo
 # OJO: En Coolify montaremos el volumen aquí
@@ -74,6 +76,7 @@ async def predict(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# SERVIR FRONTEND
 @app.get("/")
-def health():
-    return {"status": "ok", "model_loaded": model is not None}
+async def read_index():
+    return FileResponse('index.html')
