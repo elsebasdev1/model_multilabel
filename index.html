@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Visual Analysis System</title>
+    <title>SOTA Multi-Label System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -16,101 +16,101 @@
 
     <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <div class="w-8 h-8 bg-slate-900 rounded-md flex items-center justify-center text-white font-bold text-xs">AI</div>
-            <span class="font-semibold text-slate-700 tracking-tight">MultilabelScan</span>
+            <div class="w-8 h-8 bg-indigo-600 rounded-md flex items-center justify-center text-white font-bold text-xs">ML</div>
+            <span class="font-semibold text-slate-700 tracking-tight">MultiLabel<span class="text-slate-400 font-normal">Scan</span></span>
         </div>
         <div class="flex items-center gap-2">
-            <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
-            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">System Online</span>
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">SOTA Active</span>
         </div>
     </nav>
 
     <main class="flex-1 flex items-center justify-center p-6">
-        <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-                <h2 class="text-lg font-medium text-slate-800 mb-1">Input Source</h2>
-                <p class="text-sm text-slate-500 mb-6">Upload an image for classification analysis.</p>
+                <h2 class="text-lg font-medium text-slate-800 mb-1">Image Input</h2>
+                <p class="text-sm text-slate-500 mb-6">Support for complex scenes (Multiple Objects).</p>
 
-                <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-lg h-64 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-slate-500 hover:bg-slate-50 relative group">
+                <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-lg h-80 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 relative group bg-slate-50">
                     <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
                     
                     <div id="uploadPlaceholder" class="text-center">
-                        <svg class="w-10 h-10 text-slate-400 mx-auto mb-3 group-hover:text-slate-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-12 h-12 text-slate-300 mx-auto mb-4 group-hover:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
-                        <p class="text-sm font-medium text-slate-600">Click to upload or drag image</p>
-                        <p class="text-xs text-slate-400 mt-1">PNG, JPG, WEBP up to 5MB</p>
+                        <p class="text-sm font-medium text-slate-600">Drop image here</p>
                     </div>
 
                     <img id="previewImage" class="hidden w-full h-full object-contain p-2 rounded-lg" />
                 </div>
 
-                <button id="analyzeBtn" class="mt-6 w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-                    <span>Run Analysis</span>
-                    <svg id="btnIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                <button id="analyzeBtn" class="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-200">
+                    <span>Analyze Scene</span>
                     <svg id="loadingSpinner" class="animate-spin h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
             </div>
 
-            <div id="resultsPanel" class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm opacity-50 pointer-events-none transition-opacity duration-300">
-                <h2 class="text-lg font-medium text-slate-800 mb-6 border-b border-slate-100 pb-4">Analysis Report</h2>
+            <div id="resultsPanel" class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm opacity-50 pointer-events-none transition-all duration-500">
+                <h2 class="text-lg font-medium text-slate-800 mb-6 border-b border-slate-100 pb-4">Detection Results</h2>
 
                 <div class="mb-8">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Identified Class</span>
-                    <div class="flex items-baseline gap-3 mt-1">
-                        <h1 id="resultClass" class="text-4xl font-light text-slate-900">Waiting...</h1>
-                        <span id="resultConfidence" class="text-sm font-medium px-2 py-1 bg-slate-100 text-slate-600 rounded">0.00%</span>
+                    <span class="text-xs font-bold text-indigo-500 uppercase tracking-wider">Detected Objects</span>
+                    <div id="resultContainer" class="flex flex-wrap gap-2 mt-2">
+                        <h1 class="text-3xl text-slate-300">Scanning...</h1>
                     </div>
                 </div>
 
-                <div class="space-y-5">
-                    
+                <div class="space-y-6">
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-600">Automobile</span>
-                            <span id="prob-Automobile" class="text-slate-900 font-medium">--</span>
+                            <span class="font-medium text-slate-700">Dog</span>
+                            <span id="prob-Dog" class="text-slate-900 font-bold">--</span>
                         </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div id="bar-Automobile" class="bg-slate-800 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div id="bar-Dog" class="bg-slate-800 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                         </div>
                     </div>
 
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-600">Bird</span>
-                            <span id="prob-Bird" class="text-slate-900 font-medium">--</span>
+                            <span class="font-medium text-slate-700">Automobile</span>
+                            <span id="prob-Automobile" class="text-slate-900 font-bold">--</span>
                         </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div id="bar-Bird" class="bg-slate-800 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div id="bar-Automobile" class="bg-slate-800 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                         </div>
                     </div>
 
                     <div>
                         <div class="flex justify-between text-sm mb-1">
-                            <span class="text-slate-600">Dog</span>
-                            <span id="prob-Dog" class="text-slate-900 font-medium">--</span>
+                            <span class="font-medium text-slate-700">Bird</span>
+                            <span id="prob-Bird" class="text-slate-900 font-bold">--</span>
                         </div>
-                        <div class="w-full bg-slate-100 rounded-full h-2">
-                            <div id="bar-Dog" class="bg-slate-800 h-2 rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                            <div id="bar-Bird" class="bg-slate-800 h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div>
                         </div>
                     </div>
-
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
+                <div class="mt-8 flex justify-between items-end border-t border-slate-100 pt-4">
                     <div>
-                        <p class="text-xs text-slate-400">Model Architecture</p>
-                        <p class="text-sm font-medium text-slate-700">ConvNeXt Base</p>
+                        <p class="text-xs text-slate-400">Processing Time</p>
+                        <p id="perfTime" class="text-xl font-light text-slate-800">-- ms</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400">Model</p>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                          ConvNeXt Base
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-    <footer class="text-center py-6 text-xs text-slate-400">
-        &copy; 2026 Sebastián Sinchi Labs. All systems operational.
-    </footer>
 
     <script>
         const fileInput = document.getElementById('fileInput');
@@ -118,97 +118,98 @@
         const uploadPlaceholder = document.getElementById('uploadPlaceholder');
         const analyzeBtn = document.getElementById('analyzeBtn');
         const loadingSpinner = document.getElementById('loadingSpinner');
-        const btnIcon = document.getElementById('btnIcon');
         const resultsPanel = document.getElementById('resultsPanel');
+        const resultContainer = document.getElementById('resultContainer');
 
         let currentFile = null;
 
-        // 1. Manejo de Archivos
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (file) handleFile(file);
-        });
-
-        function handleFile(file) {
-            currentFile = file;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                previewImage.src = e.target.result;
-                previewImage.classList.remove('hidden');
-                uploadPlaceholder.classList.add('hidden');
-                resetResults();
+            if (file) {
+                currentFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.classList.remove('hidden');
+                    uploadPlaceholder.classList.add('hidden');
+                    resetResults();
+                }
+                reader.readAsDataURL(file);
             }
-            reader.readAsDataURL(file);
-        }
+        });
 
         function resetResults() {
             resultsPanel.classList.add('opacity-50', 'pointer-events-none');
-            document.getElementById('resultClass').innerText = "Waiting...";
-            document.getElementById('resultConfidence').innerText = "0.00%";
+            resultContainer.innerHTML = '<h1 class="text-3xl text-slate-300">Ready...</h1>';
+            ['Dog', 'Automobile', 'Bird'].forEach(c => {
+                document.getElementById(`bar-${c}`).style.width = '0%';
+                document.getElementById(`prob-${c}`).innerText = '--';
+            });
         }
 
-        // 2. Envío a la API
         analyzeBtn.addEventListener('click', async () => {
-            if (!currentFile) return alert("Please select an image first.");
+            if (!currentFile) return alert("Select an image first");
 
-            // UI Loading State
             analyzeBtn.disabled = true;
-            btnIcon.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
             
             const formData = new FormData();
             formData.append('file', currentFile);
 
             try {
-                // Petición POST al endpoint local
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) throw new Error("API Error");
-
+                const response = await fetch('/predict', { method: 'POST', body: formData });
                 const data = await response.json();
                 renderResults(data);
-
             } catch (error) {
                 console.error(error);
-                alert("Error processing image. Check console.");
+                alert("Error in analysis");
             } finally {
                 analyzeBtn.disabled = false;
-                btnIcon.classList.remove('hidden');
                 loadingSpinner.classList.add('hidden');
             }
         });
 
         function renderResults(data) {
-            // Activar Panel
             resultsPanel.classList.remove('opacity-50', 'pointer-events-none');
             resultsPanel.classList.add('fade-in');
 
-            // Datos Principales
-            document.getElementById('resultClass').innerText = data.prediction;
-            const confPercent = (data.confidence * 100).toFixed(2) + "%";
-            document.getElementById('resultConfidence').innerText = confPercent;
+            // 1. Renderizar Título Multi-Label
+            resultContainer.innerHTML = ''; // Limpiar
+            
+            // data.prediction es una lista: ["Dog", "Automobile"]
+            data.prediction.forEach(cls => {
+                const badge = document.createElement('span');
+                badge.className = "text-3xl font-light text-slate-900 border-b-2 border-indigo-500 mr-4";
+                badge.innerText = cls;
+                resultContainer.appendChild(badge);
+            });
 
-            // Actualizar Barras (Animación)
+            // 2. Actualizar Barras
             updateBar('Automobile', data.probabilities.Automobile);
             updateBar('Bird', data.probabilities.Bird);
             updateBar('Dog', data.probabilities.Dog);
 
-            // Performance
-            if (data.performance) {
-                document.getElementById('perfTime').innerText = data.performance.inference_time_ms + " ms";
-            }
+            document.getElementById('perfTime').innerText = data.time_ms + " ms";
         }
 
         function updateBar(className, probability) {
             const percent = (probability * 100).toFixed(1) + "%";
-            document.getElementById(`prob-${className}`).innerText = percent;
-            document.getElementById(`bar-${className}`).style.width = percent;
+            const bar = document.getElementById(`bar-${className}`);
+            const text = document.getElementById(`prob-${className}`);
             
-            // Color logic: Si es la clase ganadora, usar un color más oscuro
-            // Por defecto Slate-800
+            text.innerText = percent;
+            bar.style.width = percent;
+            
+            // Color dinámico: Si supera el 50%, se pone verde/indigo, si no gris
+            if (probability > 0.5) {
+                bar.classList.remove('bg-slate-300');
+                bar.classList.add('bg-indigo-600');
+                text.classList.add('text-indigo-600');
+            } else {
+                bar.classList.add('bg-slate-300');
+                bar.classList.remove('bg-indigo-600');
+                text.classList.remove('text-indigo-600');
+            }
         }
     </script>
 </body>
