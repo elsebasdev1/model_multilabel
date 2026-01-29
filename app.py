@@ -41,31 +41,29 @@ async def startup_event():
     except Exception as e:
         print(f"❌ ERROR CRÍTICO: {e}")
 
+# ... (Imports y Configuración igual que antes) ...
+
 # ============================================================================
-# LÓGICA DE TROCEADO (TILING) 🍰
+# LÓGICA DE TROCEADO + ESPEJO (TTA) 🪞
 # ============================================================================
 def create_tiles(image):
     """Genera 6 vistas de la imagen: Original, Centro y 4 Esquinas"""
     tiles = []
     w, h = image.size
     
-    # 1. Imagen Completa (Resized)
+    # 1. Imagen Completa
     tiles.append(image.resize((IMG_SIZE, IMG_SIZE), Image.BICUBIC))
     
-    # Definir coordenadas para recortes (Superposición del 20%)
-    # Usamos mitades con un poco de holgura
+    # Definir coordenadas (60% de cobertura para asegurar solapamiento)
     half_w, half_h = int(w * 0.6), int(h * 0.6)
     
-    # 2. Top-Left
-    tiles.append(image.crop((0, 0, half_w, half_h)))
-    # 3. Top-Right
-    tiles.append(image.crop((w - half_w, 0, w, half_h)))
-    # 4. Bottom-Left
-    tiles.append(image.crop((0, h - half_h, half_w, h)))
-    # 5. Bottom-Right
-    tiles.append(image.crop((w - half_w, h - half_h, w, h)))
+    # 2-5. Esquinas
+    tiles.append(image.crop((0, 0, half_w, half_h))) # Top-Left
+    tiles.append(image.crop((w - half_w, 0, w, half_h))) # Top-Right
+    tiles.append(image.crop((0, h - half_h, half_w, h))) # Bottom-Left
+    tiles.append(image.crop((w - half_w, h - half_h, w, h))) # Bottom-Right
     
-    # 6. Center Crop (Enfocado al medio)
+    # 6. Center Crop
     left = (w - half_w) // 2
     top = (h - half_h) // 2
     tiles.append(image.crop((left, top, left + half_w, top + half_h)))
@@ -73,22 +71,26 @@ def create_tiles(image):
     return tiles
 
 def process_batch(image_bytes):
-    # Abrir imagen original
     img_original = Image.open(io.BytesIO(image_bytes)).convert("RGB")
     
-    # Generar los 6 tiles
-    tiles = create_tiles(img_original)
+    # 1. Generar los 6 tiles base
+    base_tiles = create_tiles(img_original)
     
-    # Preprocesar cada tile
-    batch = []
-    for tile in tiles:
-        # Resize final a 224x224
+    final_batch = []
+    for tile in base_tiles:
+        # Resize final
         tile_resized = tile.resize((IMG_SIZE, IMG_SIZE), Image.BICUBIC)
-        tile_arr = np.array(tile_resized).astype(np.float32)
-        batch.append(tile_arr)
         
-    # Convertir a tensor batch (6, 224, 224, 3)
-    batch_np = np.array(batch)
+        # A. Versión Normal
+        final_batch.append(np.array(tile_resized).astype(np.float32))
+        
+        # B. Versión Espejo (TTA - Flip Horizontal)
+        # Esto ayuda mucho si el objeto está en una pose difícil
+        tile_flipped = tile_resized.transpose(Image.FLIP_LEFT_RIGHT)
+        final_batch.append(np.array(tile_flipped).astype(np.float32))
+        
+    # Convertir a tensor batch (12, 224, 224, 3)
+    batch_np = np.array(final_batch)
     return preprocess_input(batch_np)
 
 # ============================================================================
@@ -102,19 +104,16 @@ async def predict(file: UploadFile = File(...)):
     try:
         contents = await file.read()
         
-        # 1. Procesar Batch de Tiles
+        # 1. Procesar Batch con TTA (12 imágenes)
         processed_batch = process_batch(contents)
         
         start = time.time()
         
-        # 2. Inferencia en Paralelo (El modelo predice las 6 vistas a la vez)
-        # shape output: (6, 3) -> 6 imágenes, 3 clases
+        # 2. Inferencia Masiva
         preds_batch = model.predict(processed_batch, verbose=0)
         
-        # 3. AGREGACIÓN INTELIGENTE (MAX POOLING)
-        # Tomamos la confianza máxima de cada clase a través de todas las vistas.
-        # Si el perro sale en la esquina (tile 2), cogemos ese 99%.
-        # axis=0 colapsa las 6 filas en 1 sola tomando el valor máximo.
+        # 3. MAX POOLING (La magia)
+        # Buscamos la confianza máxima entre las 12 versiones (Normales + Espejos)
         final_probs = np.max(preds_batch, axis=0)
         
         inference_time = (time.time() - start) * 1000
@@ -123,7 +122,7 @@ async def predict(file: UploadFile = File(...)):
         results = {name: float(prob) for name, prob in zip(CLASS_NAMES, final_probs)}
         detected_objects = [name for name, prob in results.items() if prob >= THRESHOLD]
         
-        # Fallback si nada supera el umbral
+        # Fallback
         if not detected_objects:
             best_idx = np.argmax(final_probs)
             detected_objects = [CLASS_NAMES[best_idx]]
@@ -133,7 +132,7 @@ async def predict(file: UploadFile = File(...)):
             "is_multilabel": len(detected_objects) > 1,
             "time_ms": round(inference_time, 2),
             "probabilities": results,
-            "debug_mode": "Tiling Activated (6 views)"
+            "debug_mode": "SOTA Tiling + TTA (12 views)"
         }
     except Exception as e:
         print(f"Error: {e}")

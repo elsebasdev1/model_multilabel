@@ -60,7 +60,6 @@
                     <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Identified Class</span>
                     <div class="flex items-baseline gap-3 mt-1">
                         <h1 id="resultClass" class="text-4xl font-light text-slate-900 leading-tight">Waiting...</h1>
-                        <span id="resultConfidence" class="text-sm font-medium px-2 py-1 bg-slate-100 text-slate-600 rounded">0.00%</span>
                     </div>
                 </div>
 
@@ -228,7 +227,7 @@
 
             // 4. Performance
             if (data.time_ms) {
-                document.getElementById('perfTime').innerText = data.time_ms + " ms";
+                document.getElementById('perfTime').innerText = data.time_ms*1000 + " s";
             }
         }
 
