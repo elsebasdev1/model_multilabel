@@ -1,5 +1,5 @@
-# Dockerfile corregido para Debian 12+
-FROM python:3.10-slim
+# Usamos Python 3.11 que tiene mejor soporte para TensorFlow en ARM
+FROM python:3.11-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -8,14 +8,16 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# CORRECCIÓN AQUÍ: Usamos 'libgl1' en lugar de 'libgl1-mesa-glx'
+# Instalamos libgl1 (el fix de antes) y hdf5 (necesario a veces para TF en ARM)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
+    libhdf5-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Aumentamos el timeout porque compilar en ARM puede ser lento
+RUN pip install --no-cache-dir --default-timeout=100 -r requirements.txt
 
 COPY app.py .
 
