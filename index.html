@@ -100,7 +100,7 @@
                 <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-2 gap-4">
                     <div>
                         <p class="text-xs text-slate-400">Inference Time</p>
-                        <p id="perfTime" class="text-sm font-medium text-slate-700">-- ms</p>
+                        <p id="perfTime" class="text-sm font-medium text-slate-700">-- s</p>
                     </div>
                     <div>
                         <p class="text-xs text-slate-400">Model Architecture</p>
@@ -227,7 +227,9 @@
 
             // 4. Performance
             if (data.time_ms) {
-                document.getElementById('perfTime').innerText = data.time_ms*1000 + " s";
+                // CAMBIO: Dividimos para 1000 y dejamos 3 decimales
+                const seconds = (data.time_ms / 1000).toFixed(3);
+                document.getElementById('perfTime').innerText = seconds + " s";
             }
         }
 
