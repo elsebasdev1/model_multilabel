@@ -10,6 +10,8 @@
         body { font-family: 'Inter', sans-serif; }
         .fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        /* Clase para ocultar elementos con transición suave si se quisiera, por ahora display none */
+        .hidden-result { display: none; }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 h-screen flex flex-col">
@@ -17,7 +19,7 @@
     <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
             <div class="w-8 h-8 bg-slate-900 rounded-md flex items-center justify-center text-white font-bold text-xs">AI</div>
-            <span class="font-semibold text-slate-700 tracking-tight">MultilabelScan</span>
+            <span class="font-semibold text-slate-700 tracking-tight">MultilabelScan <span class="font-light text-slate-400">Pro</span></span>
         </div>
         <div class="flex items-center gap-2">
             <div class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></div>
@@ -29,10 +31,24 @@
         <div class="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
             
             <div class="bg-white p-8 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
-                <h2 class="text-lg font-medium text-slate-800 mb-1">Input Source</h2>
-                <p class="text-sm text-slate-500 mb-6">Upload an image for classification analysis.</p>
+                <h2 class="text-lg font-medium text-slate-800 mb-1">Configuration & Input</h2>
+                <p class="text-sm text-slate-500 mb-6">Select model architecture and upload image.</p>
 
-                <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-lg h-64 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-slate-500 hover:bg-slate-50 relative group">
+                <div class="mb-4">
+                    <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Inference Model</label>
+                    <div class="relative">
+                        <select id="modelSelect" class="block w-full pl-3 pr-10 py-2 text-base border-slate-300 focus:outline-none focus:ring-slate-500 focus:border-slate-500 sm:text-sm rounded-md border bg-slate-50 text-slate-700 appearance-none">
+                            <option value="standard">Standard (CIFAR-10 Baseline)</option>
+                            <option value="hd" selected>HD Fine-Tuned (Real World)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-slate-700">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2" id="modelDesc">Optimized for high-resolution photography with dynamic thresholding (30%).</p>
+                </div>
+
+                <div id="dropZone" class="border-2 border-dashed border-slate-300 rounded-lg h-56 flex flex-col items-center justify-center transition-all cursor-pointer hover:border-slate-500 hover:bg-slate-50 relative group mt-4">
                     <input type="file" id="fileInput" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept="image/*">
                     
                     <div id="uploadPlaceholder" class="text-center">
@@ -40,7 +56,6 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                         </svg>
                         <p class="text-sm font-medium text-slate-600">Click to upload or drag image</p>
-                        <p class="text-xs text-slate-400 mt-1">PNG, JPG, WEBP up to 5MB</p>
                     </div>
 
                     <img id="previewImage" class="hidden w-full h-full object-contain p-2 rounded-lg" />
@@ -60,13 +75,13 @@
                     <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Identified Class</span>
                     <div class="flex items-baseline gap-3 mt-1">
                         <h1 id="resultClass" class="text-4xl font-light text-slate-900 leading-tight">Waiting...</h1>
-                        <span id="resultConfidence" class="text-sm font-medium px-2 py-1 bg-slate-100 text-slate-600 rounded">0.00%</span>
+                        <span id="resultConfidence" class="text-sm font-medium px-2 py-1 bg-slate-100 text-slate-600 rounded">--</span>
                     </div>
                 </div>
 
-                <div class="space-y-5">
+                <div class="space-y-5" id="probabilitiesContainer">
                     
-                    <div>
+                    <div id="container-Automobile">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-slate-600">Automobile</span>
                             <span id="prob-Automobile" class="text-slate-900 font-medium">--</span>
@@ -76,7 +91,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div id="container-Bird">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-slate-600">Bird</span>
                             <span id="prob-Bird" class="text-slate-900 font-medium">--</span>
@@ -86,7 +101,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div id="container-Dog">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="text-slate-600">Dog</span>
                             <span id="prob-Dog" class="text-slate-900 font-medium">--</span>
@@ -104,8 +119,8 @@
                         <p id="perfTime" class="text-sm font-medium text-slate-700">-- s</p>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400">Model Architecture</p>
-                        <p class="text-sm font-medium text-slate-700">ConvNeXt Base</p>
+                        <p class="text-xs text-slate-400">Active Model</p>
+                        <p id="activeModelName" class="text-sm font-medium text-slate-700">--</p>
                     </div>
                 </div>
             </div>
@@ -124,10 +139,20 @@
         const loadingSpinner = document.getElementById('loadingSpinner');
         const btnIcon = document.getElementById('btnIcon');
         const resultsPanel = document.getElementById('resultsPanel');
+        const modelSelect = document.getElementById('modelSelect');
+        const modelDesc = document.getElementById('modelDesc');
 
         let currentFile = null;
 
-        // 1. Manejo de Archivos
+        // UI Logic: Cambiar descripción según modelo
+        modelSelect.addEventListener('change', (e) => {
+            if(e.target.value === 'hd') {
+                modelDesc.innerText = "Optimized for high-resolution photography with dynamic thresholding (30%).";
+            } else {
+                modelDesc.innerText = "Original CIFAR-10 trained model. High precision baseline (50%).";
+            }
+        });
+
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) handleFile(file);
@@ -149,24 +174,25 @@
             resultsPanel.classList.add('opacity-50', 'pointer-events-none');
             document.getElementById('resultClass').innerText = "Waiting...";
             document.getElementById('resultConfidence').innerText = "0.00%";
-            // Resetear barras visualmente
+            // Mostrar todas las barras de nuevo (por si acaso)
             ['Automobile', 'Bird', 'Dog'].forEach(c => {
+                 document.getElementById(`container-${c}`).classList.remove('hidden-result');
                  document.getElementById(`bar-${c}`).style.width = '0%';
                  document.getElementById(`prob-${c}`).innerText = '--';
             });
         }
 
-        // 2. Envío a la API
         analyzeBtn.addEventListener('click', async () => {
             if (!currentFile) return alert("Please select an image first.");
 
-            // UI Loading State
             analyzeBtn.disabled = true;
             btnIcon.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
             
             const formData = new FormData();
             formData.append('file', currentFile);
+            // Enviar modelo seleccionado
+            formData.append('model_type', modelSelect.value);
 
             try {
                 const response = await fetch('/predict', {
@@ -190,66 +216,72 @@
         });
 
         function renderResults(data) {
-            // Activar Panel
             resultsPanel.classList.remove('opacity-50', 'pointer-events-none');
             resultsPanel.classList.add('fade-in');
 
-            // 1. Manejo del Título (Multi-label support)
-            // La API ahora devuelve una lista: ["Dog", "Automobile"]
+            // 1. Títulos y Etiquetas
             if (Array.isArray(data.prediction)) {
-                // Si hay múltiples, los unimos con un "+"
                 document.getElementById('resultClass').innerText = data.prediction.join(" + ");
             } else {
                 document.getElementById('resultClass').innerText = data.prediction;
             }
 
-            // 2. Manejo de la Confianza Principal
-            // Si es Multi-label, no tiene sentido poner un solo %, mostramos "Detected"
             if (data.is_multilabel) {
                 document.getElementById('resultConfidence').innerText = "Multi";
                 document.getElementById('resultConfidence').className = "text-sm font-medium px-2 py-1 bg-indigo-100 text-indigo-700 rounded";
             } else {
-                // Si es simple, calculamos el % (puede venir en data.confidence o probabilities)
-                // Usamos la confianza de la primera predicción si existe
                 let confidence = 0;
-                // Si viene 'confidence' directo (del app.py anterior) o buscamos en probs
-                if (data.confidence) {
-                    confidence = data.confidence;
-                }
+                // Calculamos la confianza máxima para mostrar en el badge
+                const maxVal = Math.max(...Object.values(data.probabilities));
+                confidence = maxVal;
+                
                 const confPercent = (confidence * 100).toFixed(2) + "%";
                 document.getElementById('resultConfidence').innerText = confPercent;
                 document.getElementById('resultConfidence').className = "text-sm font-medium px-2 py-1 bg-slate-100 text-slate-600 rounded";
             }
 
-            // 3. Actualizar Barras
-            updateBar('Automobile', data.probabilities.Automobile);
-            updateBar('Bird', data.probabilities.Bird);
-            updateBar('Dog', data.probabilities.Dog);
+            // 2. ACTUALIZACIÓN INTELIGENTE DE BARRAS (FILTRO)
+            // Obtenemos la lista de predicciones validadas por el backend
+            const validPredictions = data.prediction; // Ej: ['Dog', 'Bird']
 
-            // 4. Performance
+            ['Automobile', 'Bird', 'Dog'].forEach(cls => {
+                const prob = data.probabilities[cls];
+                updateBar(cls, prob);
+
+                // LÓGICA DE OCULTAMIENTO:
+                // Si la clase NO está en la lista de predicciones aceptadas, ocultamos su contenedor div
+                const container = document.getElementById(`container-${cls}`);
+                
+                // Opción A: Mostrar solo si está en la lista de predicciones finales
+                if (validPredictions.includes(cls)) {
+                    container.classList.remove('hidden-result');
+                } else {
+                    container.classList.add('hidden-result');
+                }
+            });
+
+            // 3. Performance Stats
             if (data.time_ms) {
-                // CAMBIO: Dividimos para 1000 y dejamos 3 decimales
                 const seconds = (data.time_ms / 1000).toFixed(3);
                 document.getElementById('perfTime').innerText = seconds + " s";
             }
+            
+            // Mostrar qué modelo se usó
+            const modelName = data.model_used === 'hd' ? 'ConvNeXt HD (Fine-Tuned)' : 'ConvNeXt Base (Standard)';
+            document.getElementById('activeModelName').innerText = modelName;
         }
 
         function updateBar(className, probability) {
             const percent = (probability * 100).toFixed(1) + "%";
-            const bar = document.getElementById(`bar-${className}`);
-            const text = document.getElementById(`prob-${className}`);
+            document.getElementById(`prob-${className}`).innerText = percent;
+            document.getElementById(`bar-${className}`).style.width = percent;
             
-            text.innerText = percent;
-            bar.style.width = percent;
-            
-            // Lógica visual sutil: Si supera el 50%, la barra se queda oscura (detectado)
-            // Si es muy baja, podríamos hacerla más clara, pero mantenemos estética original
             if (probability > 0.5) {
-                bar.classList.remove('bg-slate-400');
-                bar.classList.add('bg-slate-900'); // Negro fuerte para detectado
+                document.getElementById(`bar-${className}`).classList.remove('bg-slate-400');
+                document.getElementById(`bar-${className}`).classList.add('bg-slate-900');
             } else {
-                bar.classList.add('bg-slate-400'); // Gris para no detectado
-                bar.classList.remove('bg-slate-900');
+                document.getElementById(`bar-${className}`).classList.add('bg-slate-400');
+                document.getElementById(`bar-${className}`).classList.remove('bg-slate-900');
             }
         }
     </script>
