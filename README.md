@@ -87,7 +87,7 @@ docker-compose up --build
 Accede a la interfaz web en: http://localhost:8000
 ```
 ## 📂 Estructura del Repositorio
-
+```
 ├── app.py                 # Backend FastAPI (Lógica Dual + Tiling)
 ├── Dockerfile             # Configuración de entorno Python 3.11 Slim
 ├── requirements.txt       # Dependencias (TensorFlow, Pillow, FastAPI)
@@ -98,8 +98,10 @@ Accede a la interfaz web en: http://localhost:8000
 │   ├── 03_Training_SOTA.ipynb
 │   └── 04_Domain_Adaptation.ipynb
 └── models/                # Pesos de los modelos (.keras)
-
+```
 ## 📊 Métricas de Rendimiento
-Modelo,Dataset,Accuracy,Inferencia (Avg)
-Standard,CIFAR-10 (Test),99.87%,~150ms
-HD Fine-Tuned,Real World HD,94.44%,~3000ms (con Tiling)
+| Modelo         | Dataset         | Accuracy | Inferencia (Avg)      |
+|:--------------|:----------------|:--------:|----------------------:|
+| Standard      | CIFAR-10 (Test) | 99.87%   | ~5000 ms               |
+| HD Fine-Tuned | Real World HD   | 94.44%   | ~5500 ms              |
+
