@@ -84,6 +84,8 @@ cd multilabel-vision-system
 # Construir y levantar
 docker-compose up --build
 
+Accede a la interfaz web en: http://localhost:8000
+```
 ## 📂 Estructura del Repositorio
 
 ├── app.py                 # Backend FastAPI (Lógica Dual + Tiling)
