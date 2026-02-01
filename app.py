@@ -168,6 +168,16 @@ async def predict(
         print(f"Error: {e}")
         raise HTTPException(status_code=500, detail="Error interno")
 
+@app.get("/manifest.json")
+async def get_manifest():
+    # El navegador necesita saber que es un JSON para activarlo
+    return FileResponse("manifest.json", media_type="application/json")
+
+@app.get("/icon.png")
+async def get_icon():
+    # Sirve el icono para que se vea en el celular
+    return FileResponse("icon.png", media_type="image/png")
+
 @app.get("/")
 async def read_index():
     return FileResponse('index.html')

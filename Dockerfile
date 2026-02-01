@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 COPY index.html .
 COPY manifest.json .
+COPY icon.png .
 # Aumentamos el timeout porque compilar en ARM puede ser lento
 RUN pip install --no-cache-dir --default-timeout=100 -r requirements.txt
 
