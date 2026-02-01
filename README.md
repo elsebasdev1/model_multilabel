@@ -5,6 +5,8 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-badge)
+![MLflow](https://img.shields.io/badge/MLflow-Tracking-blue?style=for-the-badge&logo=mlflow)
+
 
 > **Un sistema de visión artificial de alto rendimiento capaz de detectar múltiples objetos simultáneamente en entornos no controlados, utilizando arquitecturas ConvNeXt Base y estrategias de Adaptación de Dominio.**
 
@@ -14,14 +16,12 @@
 
 El sistema cuenta con una interfaz minimalista y profesional desarrollada con **TailwindCSS**, diseñada para la inferencia en tiempo real.
 
-![Dashboard Principal](assets/demo_dashboard.png)
-*(Aquí va captura del Front completo mostrando el input y los resultados vacíos)*
+<img width="2511" height="1343" alt="Screenshot 2026-02-01 122139" src="https://github.com/user-attachments/assets/6f982791-6b76-439f-9851-f5aa0ee95448" />
 
 ### 🔍 Detección Inteligente (Tiling Strategy)
 El sistema no solo mira la imagen completa. Aplica una estrategia de **"Smart Tiling"** (6 vistas simultáneas) para detectar objetos pequeños u ocultos, como un loro en la ventana de un auto.
 
-![Resultado Multi-Label](assets/result_multilabel.png)
-*(Aquí va captura del resultado "Automobile + Bird" mostrando las barras de progreso)*
+<img width="1815" height="1167" alt="Screenshot 2026-02-01 122407" src="https://github.com/user-attachments/assets/890b12f8-31c3-4074-a66d-98769df496d6" />
 
 ---
 
@@ -56,9 +56,6 @@ Entrenamiento del modelo base utilizando técnicas de regularización avanzadas:
 * **Mixed Precision (FP16):** Para optimizar el uso de VRAM.
 * **Resultado:** 99.87% Accuracy en Test Set.
 
-![Curvas de Entrenamiento](assets/training_curves.png)
-*(Aquí va captura de las gráficas de Loss/Accuracy del cuaderno 03)*
-
 ### 4. Adaptación de Dominio (The "Real World" Fix)
 Resolución del problema de **"Catastrophic Forgetting"** en imágenes HD.
 * Ingesta de dataset curado HD.
@@ -78,8 +75,8 @@ Resolución del problema de **"Catastrophic Forgetting"** en imágenes HD.
 Clona el repositorio y levanta el contenedor:
 
 ```bash
-git clone [https://github.com/tu-usuario/multilabel-vision-system.git](https://github.com/tu-usuario/multilabel-vision-system.git)
-cd multilabel-vision-system
+git clone [https://github.com/elsebasdev1/model_multilabel.git](https://github.com/elsebasdev1/model_multilabel.git)
+cd model_multilabel
 
 # Construir y levantar
 docker-compose up --build
