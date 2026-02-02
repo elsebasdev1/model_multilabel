@@ -8,7 +8,41 @@
 ![MLflow](https://img.shields.io/badge/MLflow-Tracking-blue?style=for-the-badge&logo=mlflow)
 
 
-> **Un sistema de visión artificial de alto rendimiento capaz de detectar múltiples objetos simultáneamente en entornos no controlados, utilizando arquitecturas ConvNeXt Base y estrategias de Adaptación de Dominio.**
+## 1. RESUMEN (ABSTRACT)
+**Problema:** Los modelos de clasificación de imágenes entrenados en datasets académicos de baja resolución (como CIFAR-10) sufren una degradación severa de rendimiento ("Domain Gap") cuando se aplican a imágenes del mundo real de alta definición.
+**Propuesta:** Se presenta un método en tres fases que utiliza una arquitectura **ConvNeXt Base**. Se implementa una estrategia de *Transfer Learning* inicial, seguida de una técnica de *Domain Adaptation* (Fine-Tuning) y un despliegue con estrategia de "Smart Tiling" para maximizar la detección de objetos pequeños.
+**Dataset:** Se utiliza CIFAR-10 para el aprendizaje de representaciones base y un dataset propietario (HD Real World) para la adaptación.
+**Resultados:** El método alcanza un 99.87% de Accuracy en el dominio académico y mejora del 83% al 94.44% en el dominio real tras la adaptación.
+
+---
+
+## 2. MÉTODO PROPUESTO
+La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia de datos estricto, dividido en tres fases macro: Ingeniería de Datos, Modelado SOTA y Adaptación de Dominio.
+
+### Diagrama del Método (Mermaid)
+
+```mermaid
+graph TD
+    subgraph Phase 1: Data Prep
+        A[Raw Images] --> B[Upscaling 224x224]
+        B --> C[Normalization]
+        C --> D[(Numpy Tensors)]
+    end
+    
+    subgraph Phase 2: Training SOTA
+        D --> E[ConvNeXt Base]
+        E --> F[MixUp Augmentation]
+        F --> G((Model CIFAR-10))
+    end
+    
+    subgraph Phase 3: Domain Adaptation & Serving
+        G --> H[Fine-Tuning HD]
+        H --> I((Model HD))
+        J[User Image] --> K[Smart Tiling 6-Views]
+        K --> L[Inference Engine]
+        I --> L
+        L --> M[Prediction]
+    end
 
 ---
 
