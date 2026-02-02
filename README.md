@@ -10,8 +10,11 @@
 
 ## 1. RESUMEN (ABSTRACT)
 **Problema:** Los modelos de clasificación de imágenes entrenados en datasets académicos de baja resolución (como CIFAR-10) sufren una degradación severa de rendimiento ("Domain Gap") cuando se aplican a imágenes del mundo real de alta definición.
+
 **Propuesta:** Se presenta un método en tres fases que utiliza una arquitectura **ConvNeXt Base**. Se implementa una estrategia de *Transfer Learning* inicial, seguida de una técnica de *Domain Adaptation* (Fine-Tuning) y un despliegue con estrategia de "Smart Tiling" para maximizar la detección de objetos pequeños.
+
 **Dataset:** Se utiliza CIFAR-10 para el aprendizaje de representaciones base y un dataset propietario (HD Real World) para la adaptación.
+
 **Resultados:** El método alcanza un 99.87% de Accuracy en el dominio académico y mejora del 83% al 94.44% en el dominio real tras la adaptación.
 
 ---
