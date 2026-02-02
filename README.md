@@ -62,6 +62,15 @@ Resolución del problema de **"Catastrophic Forgetting"** en imágenes HD.
 * Corrección automática de alineación de etiquetas (Label Re-ordering).
 * Fine-Tuning con Learning Rate reducido (`1e-5`).
 * **Mejora:** Del 83% al **94.4%** en imágenes reales.
+<img width="1438" height="553" alt="Screenshot_20260202_141033" src="https://github.com/user-attachments/assets/c1d9c860-1873-4a8a-b6f7-d88b09a84eab" />
+## Resultados Comparativos (Dataset Real-World)
+
+| Métrica           | Standard (CIFAR-10) | HD (Fine-Tuned) | Diferencia |
+|-------------------|--------------------|----------------|------------|
+| Accuracy Global   | 33.33%             | 100.00%        | +66.67%    |
+| F1 dog            | 50.00%             | 100.00%        | +50.00%    |
+| F1 automobile     | 0.00%              | 0.00%          | +0.00%     |
+| F1 bird           | 0.00%              | 0.00%          | +0.00%     |
 
 ---
 
