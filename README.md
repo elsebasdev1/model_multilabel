@@ -22,37 +22,32 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 ### Diagrama del Método (Mermaid)
 
 ```mermaid
-graph TB
-    %% --- ESTILOS ---
-    classDef phaseStyle fill:#FFFACD,stroke:#000,stroke-width:2px
-    classDef contentStyle fill:#fff,stroke:#000,stroke-width:1px,text-align:left
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'14px'}}}%%
+graph LR
+    subgraph FILA1[" "]
+        direction LR
+        A1["<b>Fase 1: Ingeniería de Datos</b><br/><br/>1. Ingesta Datos CIFAR-10<br/>2. EDA: Análisis de Clases<br/>3. Upscaling 32→224px<br/>4. Normalización ConvNeXt"]
+        A2["<b>Fase 2: Modelado SOTA</b><br/><br/>1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Modelo Base 99%"]
+    end
     
-    %% --- FASES (cajas externas) ---
-    P1["Fase 1: Ingeniería de Datos"]:::phaseStyle
-    P2["Fase 2: Modelado SOTA"]:::phaseStyle
-    P3["Fase 3: Adaptación de Dominio"]:::phaseStyle
-    P4["Fase 4: Servicio & Aplicación"]:::phaseStyle
+    subgraph FILA2[" "]
+        direction LR
+        B1["<b>Fase 3: Adaptación Dominio</b><br/><br/>1. Ingesta Dataset HD Real<br/>2. Corrección Etiquetas<br/>3. Fine-Tuning LR=1e-5<br/>4. Validación MLflow"]
+        B2["<b>Fase 4: Servicio & App</b><br/><br/>1. Interfaz PWA/Cámara<br/>2. Smart Tiling 6-Vistas<br/>3. Motor Dual Std/HD<br/>4. Despliegue Docker"]
+    end
     
-    %% --- CONTENIDO (cajas internas) ---
-    N1["1. Ingesta Datos CIFAR-10<br/>2. EDA: Análisis de Clases<br/>3. Upscaling 32px → 224px<br/>4. Normalización ConvNeXt"]:::contentStyle
-    N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::contentStyle
-    N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning LR=1e-5<br/>4. Validación MLflow"]:::contentStyle
-    N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling 6-Vistas<br/>3. Motor Dual Std vs HD<br/>4. Despliegue: Docker"]:::contentStyle
+    A1 --> A2
+    A2 --> B1
+    B1 --> B2
     
-    %% --- ESTRUCTURA 2x2 ---
-    P1 --> N1
-    P2 --> N2
-    P3 --> N3
-    P4 --> N4
+    FILA1 ~~~ FILA2
     
-    %% --- CONEXIONES DE FLUJO ---
-    N1 -->|Datos Procesados| N2
-    N2 -->|Modelo Base| N3
-    N3 -->|Modelo Final| N4
-    
-    %% --- FORZAR DISPOSICIÓN HORIZONTAL ---
-    P1 -.-> P2
-    P3 -.-> P4
+    style A1 fill:#FFFACD,stroke:#000,stroke-width:2px,text-align:left
+    style A2 fill:#FFFACD,stroke:#000,stroke-width:2px,text-align:left
+    style B1 fill:#FFFACD,stroke:#000,stroke-width:2px,text-align:left
+    style B2 fill:#FFFACD,stroke:#000,stroke-width:2px,text-align:left
+    style FILA1 fill:none,stroke:none
+    style FILA2 fill:none,stroke:none
 ```
 
 ---
