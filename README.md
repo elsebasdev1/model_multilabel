@@ -22,50 +22,37 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 ### Diagrama del Método (Mermaid)
 
 ```mermaid
-flowchart TD
+graph TB
     %% --- ESTILOS ---
-    classDef content fill:#fff,stroke:#000,stroke-width:1px,text-align:left;
+    classDef phaseStyle fill:#FFFACD,stroke:#000,stroke-width:2px
+    classDef contentStyle fill:#fff,stroke:#000,stroke-width:1px,text-align:left
     
-    %% --- FILA 1: SUPERIOR ---
-    subgraph ROW1 [" "]
-        direction LR
-        style ROW1 fill:none,stroke:none
-        
-        subgraph P1 ["Fase 1: Ingeniería de Datos"]
-            direction TB
-            N1["1. Ingesta Datos (CIFAR-10)<br/>2. EDA: Análisis de Clases<br/>3. Upscaling (32px a 224px)<br/>4. Normalización ConvNeXt"]:::content
-        end
-        
-        subgraph P2 ["Fase 2: Modelado SOTA"]
-            direction TB
-            N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::content
-        end
-    end
+    %% --- FASES (cajas externas) ---
+    P1["Fase 1: Ingeniería de Datos"]:::phaseStyle
+    P2["Fase 2: Modelado SOTA"]:::phaseStyle
+    P3["Fase 3: Adaptación de Dominio"]:::phaseStyle
+    P4["Fase 4: Servicio & Aplicación"]:::phaseStyle
     
-    %% --- FILA 2: INFERIOR ---
-    subgraph ROW2 [" "]
-        direction LR
-        style ROW2 fill:none,stroke:none
-        
-        subgraph P3 ["Fase 3: Adaptación de Dominio"]
-            direction TB
-            N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning (LR=1e-5)<br/>4. Validación MLflow"]:::content
-        end
-        
-        subgraph P4 ["Fase 4: Servicio & Aplicación"]
-            direction TB
-            N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling (6-Vistas)<br/>3. Motor Dual (Std vs HD)<br/>4. Despliegue: Docker"]:::content
-        end
-    end
+    %% --- CONTENIDO (cajas internas) ---
+    N1["1. Ingesta Datos CIFAR-10<br/>2. EDA: Análisis de Clases<br/>3. Upscaling 32px → 224px<br/>4. Normalización ConvNeXt"]:::contentStyle
+    N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::contentStyle
+    N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning LR=1e-5<br/>4. Validación MLflow"]:::contentStyle
+    N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling 6-Vistas<br/>3. Motor Dual Std vs HD<br/>4. Despliegue: Docker"]:::contentStyle
     
-    %% --- CONEXIONES (Flujo en Z) ---
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
+    %% --- ESTRUCTURA 2x2 ---
+    P1 --> N1
+    P2 --> N2
+    P3 --> N3
+    P4 --> N4
     
-    %% --- ALINEACIÓN VERTICAL ---
-    P1 ~~~ P3
-    P2 ~~~ P4
+    %% --- CONEXIONES DE FLUJO ---
+    N1 -->|Datos Procesados| N2
+    N2 -->|Modelo Base| N3
+    N3 -->|Modelo Final| N4
+    
+    %% --- FORZAR DISPOSICIÓN HORIZONTAL ---
+    P1 -.-> P2
+    P3 -.-> P4
 ```
 
 ---
