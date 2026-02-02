@@ -22,46 +22,48 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 ### Diagrama del Método (Mermaid)
 
 ```mermaid
-flowchart TB
-    %% --- ESTILOS LIMPIOS ---
-    classDef content fill:#fff,stroke:#000,stroke-width:1px,text-align:left;
+flowchart TD
+    %% --- DEFINICIÓN DE ESTILOS (PAPER ACADÉMICO) ---
+    %% Estilo de caja con texto alineado a la izquierda y fondo blanco
+    classDef phaseBox fill:#fff,stroke:#000,stroke-width:1px,text-align:left;
 
-    %% --- FILA SUPERIOR (Fases 1 y 2) ---
-    subgraph TOP_ROW [ ]
+    %% --- DEFINICIÓN DE NODOS (CONTENIDO) ---
+    %% Usamos comillas para evitar errores de sintaxis
+    
+    P1["<b>PHASE 1: Data Engineering</b><br/>- Ingesta: CIFAR-10 & HD Raw<br/>- EDA: Distribución de Clases<br/>- Upscaling: 32px a 224px (Bicubic)<br/>- Normalización: Preprocess ConvNeXt<br/>- Output: Tensores Binarios (.npy)"]:::phaseBox
+
+    P2["<b>PHASE 2: SOTA Training</b><br/>- Arquitectura: ConvNeXt Base<br/>- Estrategia: Transfer Learning<br/>- Regularización: MixUp (alpha=0.2)<br/>- Optim: AdamW + Mixed Precision<br/>- Resultado: Model Standard (99.8%)"]:::phaseBox
+
+    P3["<b>PHASE 3: Domain Adaptation</b><br/>- Input: Dataset Real-World (HD)<br/>- ETL: Alineación de Etiquetas (Fix)<br/>- Training: Fine-Tuning (LR=1e-5)<br/>- Tracking: MLflow Metrics<br/>- Resultado: Model HD (94.4%)"]:::phaseBox
+
+    P4["<b>PHASE 4: Production & Serving</b><br/>- Interfaz: PWA / Acceso Cámara<br/>- Lógica: Smart Tiling (6-Vistas)<br/>- Inferencia: Motor Dual (Std/HD)<br/>- Post-Proc: Threshold Dinámico<br/>- Despliegue: Docker Container"]:::phaseBox
+
+    %% --- ESTRUCTURA DE GRID (CUADRADO) ---
+    %% Subgrafos para forzar alineación horizontal por filas
+    
+    subgraph Row1 [ ]
         direction LR
-        style TOP_ROW fill:none,stroke:none
-
-        subgraph P1 ["Phase 1: Data Engineering"]
-            direction TB
-            N1["1. Ingesta Datos (CIFAR-10)<br/>2. EDA: Análisis de Clases<br/>3. Upscaling (32px a 224px)<br/>4. Normalización ConvNeXt"]:::content
-        end
-
-        subgraph P2 ["Phase 2: SOTA Training"]
-            direction TB
-            N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::content
-        end
+        style Row1 fill:none,stroke:none
+        P1
+        P2
     end
 
-    %% --- FILA INFERIOR (Fases 3 y 4) ---
-    subgraph BOT_ROW [ ]
+    subgraph Row2 [ ]
         direction LR
-        style BOT_ROW fill:none,stroke:none
-
-        subgraph P3 ["Phase 3: Domain Adaptation"]
-            direction TB
-            N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning (LR=1e-5)<br/>4. Validación MLflow"]:::content
-        end
-
-        subgraph P4 ["Phase 4: Serving & App"]
-            direction TB
-            N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling (6-Vistas)<br/>3. Motor Dual (Std vs HD)<br/>4. Despliegue: Docker"]:::content
-        end
+        style Row2 fill:none,stroke:none
+        P3
+        P4
     end
 
-    %% --- FLUJO ---
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
+    %% --- CONEXIONES VISIBLES (FLUJO) ---
+    P1 --> P2
+    P2 --> P3
+    P3 --> P4
+
+    %% --- TRUCO DE ALINEACIÓN (INVISIBLES) ---
+    %% Esto fuerza que P3 quede debajo de P1 y P4 debajo de P2
+    P1 ~~~ P3
+    P2 ~~~ P4
 ```
 
 ---
