@@ -23,62 +23,57 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ```mermaid
 graph TD
-    %% --- ESTILOS VISUALES ---
-    classDef data fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
-    classDef process fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
-    classDef model fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
-    classDef serving fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100;
-    classDef user fill:#212121,stroke:#000,stroke-width:2px,color:#fff;
+    %% --- DEFINICIÓN DE ESTILOS (ACADÉMICO / SOBRIO) ---
+    %% Fondo blanco, bordes negros, texto negro. Sin colores.
+    classDef container fill:#fff,stroke:#000,stroke-width:2px;
+    classDef step fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray: 0;
+    classDef highlight fill:#f9f9f9,stroke:#000,stroke-width:1px;
 
-    %% --- FASE 1: INGENIERÍA DE DATOS ---
-    subgraph P1 [Phase 1: Data Engineering & ETL]
+    %% --- CONTENEDOR SUPERIOR (Para alinear Fase 1 y Fase 2 horizontalmente) ---
+    subgraph TOP_ROW [ ]
+        direction LR
+        style TOP_ROW fill:#fff,stroke:#fff,color:#fff
+
+        %% === FASE 1: PREPARACIÓN (IZQUIERDA) ===
+        subgraph P1 [Phase 1: Data Engineering]
+            direction TB
+            S1_1["1. Raw Data Ingestion"]:::step
+            S1_2["2. Bicubic Upscaling (224x224)"]:::step
+            S1_3["3. Normalization & Encoding"]:::step
+            
+            S1_1 --> S1_2 --> S1_3
+        end
+
+        %% === FASE 2: MODELADO SOTA (DERECHA) ===
+        subgraph P2 [Phase 2: SOTA Training]
+            direction TB
+            S2_1["1. ConvNeXt Base Setup"]:::step
+            S2_2["2. MixUp Augmentation"]:::highlight
+            S2_3["3. Training (CIFAR-10)"]:::step
+            
+            S2_1 --> S2_2 --> S2_3
+        end
+    end
+
+    %% === FASE 3: ADAPTACIÓN (ABAJO CENTRO) ===
+    subgraph P3 [Phase 3: Domain Adaptation & Serving]
         direction TB
-        RAW1[("CIFAR-10 Raw")]:::data
-        RAW2[("HD Dataset")]:::data
+        S3_1["1. Fine-Tuning (HD Dataset)"]:::highlight
+        S3_2["2. Smart Tiling Strategy"]:::highlight
+        S3_3["3. Inference & Thresholding"]:::step
         
-        STEP1["Upscaling Bicúbico<br/>(32px to 224px)"]:::process
-        STEP2["One-Hot Encoding"]:::process
-        TENSORS[("Numpy Tensors")]:::data
-
-        RAW1 --> STEP1
-        RAW2 --> STEP1
-        STEP1 --> STEP2 --> TENSORS
+        S3_1 --> S3_2 --> S3_3
     end
 
-    %% --- FASE 2: ENTRENAMIENTO SOTA ---
-    subgraph P2 [Phase 2: SOTA Training]
-        direction TB
-        ARCH[["ConvNeXt Base"]]:::model
-        AUG["MixUp Augmentation<br/>alpha=0.2"]:::process
-        OPT["AdamW + Mixed Precision"]:::process
-        MODEL_STD(("Model Standard<br/>Acc: 99.8%")):::model
+    %% --- CONEXIONES ENTRE FASES ---
+    %% Conectamos el último paso de P1 con el primero de P2
+    S1_3 --> S2_1
+    
+    %% Conectamos el modelo entrenado de P2 con el Fine-Tuning de P3
+    S2_3 --> S3_1
 
-        TENSORS --> AUG
-        ARCH --> AUG
-        AUG --> OPT --> MODEL_STD
-    end
-
-    %% --- FASE 3: ADAPTACIÓN Y SERVING ---
-    subgraph P3 [Phase 3: Domain Adaptation & Production]
-        direction TB
-        FT["Fine-Tuning<br/>LR=1e-5 / Unfrozen"]:::process
-        MODEL_HD(("Model HD<br/>Acc: 94.4%")):::model
-        
-        IMG_USER["User Input<br/>Camera/Upload"]:::user
-        CROP{"Smart Tiling<br/>6-Views Strategy"}:::serving
-        API["Inference API<br/>Dual Engine"]:::serving
-        RES(["Multi-Label Prediction"]):::serving
-
-        %% Flujo de Adaptación
-        MODEL_STD -.->|Transfer Learning| FT
-        FT --> MODEL_HD
-
-        %% Flujo de Inferencia
-        MODEL_HD -.->|Load Weights| API
-        IMG_USER --> CROP
-        CROP -->|"Batch 6x"| API
-        API -->|Thresholding| RES
-    end
+    %% Aplicamos estilos a los contenedores de fases
+    class P1,P2,P3 container;
 ```
 
 ---
