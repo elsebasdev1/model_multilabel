@@ -22,58 +22,57 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 ### Diagrama del Método (Mermaid)
 
 ```mermaid
-graph TD
-    %% --- DEFINICIÓN DE ESTILOS (ACADÉMICO / SOBRIO) ---
-    %% Fondo blanco, bordes negros, texto negro. Sin colores.
-    classDef container fill:#fff,stroke:#000,stroke-width:2px;
-    classDef step fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray: 0;
-    classDef highlight fill:#f9f9f9,stroke:#000,stroke-width:1px;
+flowchart TB
+    %% --- ESTILOS ACADÉMICOS (SOBRIO) ---
+    classDef container fill:#fff,stroke:#333,stroke-width:2px,color:#000;
+    classDef content fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray:0,text-align:left;
+    classDef invisible fill:none,stroke:none;
 
-    %% --- CONTENEDOR SUPERIOR (Para alinear Fase 1 y Fase 2 horizontalmente) ---
-    subgraph TOP_ROW [ ]
-        direction LR
-        style TOP_ROW fill:#fff,stroke:#fff,color:#fff
-
-        %% === FASE 1: PREPARACIÓN (IZQUIERDA) ===
-        subgraph P1 [Phase 1: Data Engineering]
-            direction TB
-            S1_1["1. Raw Data Ingestion"]:::step
-            S1_2["2. Bicubic Upscaling (224x224)"]:::step
-            S1_3["3. Normalization & Encoding"]:::step
-            
-            S1_1 --> S1_2 --> S1_3
-        end
-
-        %% === FASE 2: MODELADO SOTA (DERECHA) ===
-        subgraph P2 [Phase 2: SOTA Training]
-            direction TB
-            S2_1["1. ConvNeXt Base Setup"]:::step
-            S2_2["2. MixUp Augmentation"]:::highlight
-            S2_3["3. Training (CIFAR-10)"]:::step
-            
-            S2_1 --> S2_2 --> S2_3
-        end
-    end
-
-    %% === FASE 3: ADAPTACIÓN (ABAJO CENTRO) ===
-    subgraph P3 [Phase 3: Domain Adaptation & Serving]
-        direction TB
-        S3_1["1. Fine-Tuning (HD Dataset)"]:::highlight
-        S3_2["2. Smart Tiling Strategy"]:::highlight
-        S3_3["3. Inference & Thresholding"]:::step
-        
-        S3_1 --> S3_2 --> S3_3
-    end
-
-    %% --- CONEXIONES ENTRE FASES ---
-    %% Conectamos el último paso de P1 con el primero de P2
-    S1_3 --> S2_1
+    %% --- ESTRUCTURA DE FILAS ---
+    %% Usamos subgrafos invisibles para forzar la alineación
     
-    %% Conectamos el modelo entrenado de P2 con el Fine-Tuning de P3
-    S2_3 --> S3_1
+    subgraph ROW1 [ ]
+        direction LR
+        style ROW1 fill:none,stroke:none
 
-    %% Aplicamos estilos a los contenedores de fases
-    class P1,P2,P3 container;
+        %% === FASE 1 (ARRIBA IZQUIERDA) ===
+        subgraph P1 [Phase 1: Analysis & Data Engineering]
+            direction TB
+            P1_CONTENT["1. Data Ingestion (CIFAR-10)<br/>2. EDA: Class Distribution Analysis<br/>3. Bicubic Upscaling (32px → 224px)<br/>4. Normalization (ConvNeXt Standard)<br/>5. Serialization to .npy format"]:::content
+        end
+
+        %% === FASE 2 (ARRIBA DERECHA) ===
+        subgraph P2 [Phase 2: SOTA Modeling & Training]
+            direction TB
+            P2_CONTENT["1. Architecture: ConvNeXt Base (Pre-trained)<br/>2. Strategy: Transfer Learning (Unfrozen)<br/>3. Regularization: MixUp Augmentation (α=0.2)<br/>4. Optimization: AdamW + Mixed Precision (FP16)<br/>5. Artifact: Base Model (99.8% Accuracy)"]:::content
+        end
+    end
+
+    subgraph ROW2 [ ]
+        direction LR
+        style ROW2 fill:none,stroke:none
+
+        %% === FASE 3 (ABAJO IZQUIERDA) ===
+        subgraph P3 [Phase 3: Domain Adaptation (Fine-Tuning)]
+            direction TB
+            P3_CONTENT["1. Ingestion: Real-World HD Dataset<br/>2. Tensor Alignment: Fix Label Ordering<br/>3. Continuous Training: Fine-Tuning (LR=1e-5)<br/>4. Metric Tracking: MLflow Integration<br/>5. Result: Domain Gap Resolved (94.4% Acc)"]:::content
+        end
+
+        %% === FASE 4 (ABAJO DERECHA) ===
+        subgraph P4 [Phase 4: Serving & Production]
+            direction TB
+            P4_CONTENT["1. Input Interface: PWA / Camera Access<br/>2. Pre-Processing: Smart Tiling (6-Views)<br/>3. Logic: Dual-Engine Selection (Std vs HD)<br/>4. Post-Processing: Dynamic Thresholding<br/>5. Deployment: Docker Container"]:::content
+        end
+    end
+
+    %% --- CONEXIONES DE FLUJO ---
+    %% Flujo lógico entre fases
+    P1_CONTENT --> P2_CONTENT
+    P2_CONTENT --> P3_CONTENT
+    P3_CONTENT --> P4_CONTENT
+
+    %% Aplicar estilos de contenedor
+    class P1,P2,P3,P4 container;
 ```
 
 ---
