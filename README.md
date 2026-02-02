@@ -23,52 +23,47 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ```mermaid
 flowchart TD
-    %% --- ESTILOS LIMPIOS ---
+    %% --- ESTILOS ---
     classDef content fill:#fff,stroke:#000,stroke-width:1px,text-align:left;
-
+    
     %% --- FILA 1: SUPERIOR ---
-    subgraph ROW1 [ ]
+    subgraph ROW1 [" "]
         direction LR
         style ROW1 fill:none,stroke:none
-
-        %% FASE 1
-        subgraph P1 ["Phase 1: Data Engineering"]
+        
+        subgraph P1 ["Fase 1: Ingeniería de Datos"]
             direction TB
             N1["1. Ingesta Datos (CIFAR-10)<br/>2. EDA: Análisis de Clases<br/>3. Upscaling (32px a 224px)<br/>4. Normalización ConvNeXt"]:::content
         end
-
-        %% FASE 2
-        subgraph P2 ["Phase 2: SOTA Training"]
+        
+        subgraph P2 ["Fase 2: Modelado SOTA"]
             direction TB
             N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::content
         end
     end
-
+    
     %% --- FILA 2: INFERIOR ---
-    subgraph ROW2 [ ]
+    subgraph ROW2 [" "]
         direction LR
         style ROW2 fill:none,stroke:none
-
-        %% FASE 3
-        subgraph P3 ["Phase 3: Domain Adaptation"]
+        
+        subgraph P3 ["Fase 3: Adaptación de Dominio"]
             direction TB
             N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning (LR=1e-5)<br/>4. Validación MLflow"]:::content
         end
-
-        %% FASE 4
-        subgraph P4 ["Phase 4: Serving & App"]
+        
+        subgraph P4 ["Fase 4: Servicio & Aplicación"]
             direction TB
             N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling (6-Vistas)<br/>3. Motor Dual (Std vs HD)<br/>4. Despliegue: Docker"]:::content
         end
     end
-
-    %% --- CONEXIONES VISIBLES (Flujo en Z) ---
+    
+    %% --- CONEXIONES (Flujo en Z) ---
     N1 --> N2
     N2 --> N3
     N3 --> N4
-
-    %% --- ALINEACIÓN DE CUADRÍCULA (Invisible) ---
-    %% Esto fuerza que P3 quede debajo de P1 y P4 debajo de P2
+    
+    %% --- ALINEACIÓN VERTICAL ---
     P1 ~~~ P3
     P2 ~~~ P4
 ```
