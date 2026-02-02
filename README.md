@@ -37,6 +37,26 @@ El sistema no solo mira la imagen completa. Aplica una estrategia de **"Smart Ti
 
 ---
 
+## MLOps & Experiment Tracking (MLflow)
+
+Para garantizar la reproducibilidad científica y el monitoreo en tiempo real, se integró el ciclo de entrenamiento con MLflow. Esto permitió auditar la evolución de los gradientes y detectar convergencia temprana.
+
+### Tablero de métricas en tiempo real
+<img width="1866" height="696" alt="Screenshot_20260202_141826" src="https://github.com/user-attachments/assets/764fb2f4-c5c1-4570-9431-1bd69ccdcb02" />
+
+## Análisis de las Métricas
+
+### Convergencia Robusta
+El val_loss cae rápidamente y se estabiliza cerca de 0.01, confirmando que no hay overfitting degradante.
+
+### Efecto MixUp
+Se observa que el train_accuracy es inferior al val_accuracy. Esto es un comportamiento esperado y deseable cuando se utiliza MixUp Augmentation: el modelo entrena con imágenes mezcladas para forzar una generalización perfecta en los datos de validación.
+
+### AUC SOTA
+La métrica val_auc se mantiene constante cerca de 1.0, lo que valida la capacidad del modelo para separar las clases con un umbral de decisión limpio.
+
+---
+
 ## 🛠️ Arquitectura del Proyecto
 
 El proyecto sigue una metodología rigurosa de Data Science dividida en 4 fases (Cuadernos):
