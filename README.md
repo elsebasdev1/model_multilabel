@@ -126,9 +126,3 @@ Accede a la interfaz web en: http://localhost:8000
 │   └── 04_Domain_Adaptation.ipynb
 └── models/                # Pesos de los modelos (.keras)
 ```
-## 📊 Métricas de Rendimiento
-| Modelo         | Dataset         | Accuracy | Inferencia (Avg)      |
-|:--------------|:----------------|:--------:|----------------------:|
-| Standard      | CIFAR-10 (Test) | 99.87%   | ~5000 ms               |
-| HD Fine-Tuned | Real World HD   | 94.44%   | ~5500 ms              |
-
