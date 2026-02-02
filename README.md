@@ -23,7 +23,7 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ```mermaid
 graph TD
-    %% --- ESTILOS VISUALES (PALETA PROFESIONAL) ---
+    %% --- ESTILOS VISUALES ---
     classDef data fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
     classDef process fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
     classDef model fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
@@ -33,12 +33,12 @@ graph TD
     %% --- FASE 1: INGENIERÍA DE DATOS ---
     subgraph P1 [Phase 1: Data Engineering & ETL]
         direction TB
-        RAW1[(CIFAR-10 Raw)]:::data
-        RAW2[(HD Dataset)]:::data
+        RAW1[("CIFAR-10 Raw")]:::data
+        RAW2[("HD Dataset")]:::data
         
-        STEP1[Upscaling Bicúbico<br/>(32px -> 224px)]:::process
-        STEP2[One-Hot Encoding]:::process
-        TENSORS[(Numpy Tensors)]:::data
+        STEP1["Upscaling Bicúbico<br/>(32px to 224px)"]:::process
+        STEP2["One-Hot Encoding"]:::process
+        TENSORS[("Numpy Tensors")]:::data
 
         RAW1 --> STEP1
         RAW2 --> STEP1
@@ -48,10 +48,10 @@ graph TD
     %% --- FASE 2: ENTRENAMIENTO SOTA ---
     subgraph P2 [Phase 2: SOTA Training]
         direction TB
-        ARCH[[ConvNeXt Base]]:::model
-        AUG[MixUp Augmentation<br/>alpha=0.2]:::process
-        OPT[AdamW + Mixed Precision]:::process
-        MODEL_STD((Model Standard<br/>Acc: 99.8%)):::model
+        ARCH[["ConvNeXt Base"]]:::model
+        AUG["MixUp Augmentation<br/>alpha=0.2"]:::process
+        OPT["AdamW + Mixed Precision"]:::process
+        MODEL_STD(("Model Standard<br/>Acc: 99.8%")):::model
 
         TENSORS --> AUG
         ARCH --> AUG
@@ -61,13 +61,13 @@ graph TD
     %% --- FASE 3: ADAPTACIÓN Y SERVING ---
     subgraph P3 [Phase 3: Domain Adaptation & Production]
         direction TB
-        FT[Fine-Tuning<br/>LR=1e-5 / Unfrozen]:::process
-        MODEL_HD((Model HD<br/>Acc: 94.4%)):::model
+        FT["Fine-Tuning<br/>LR=1e-5 / Unfrozen"]:::process
+        MODEL_HD(("Model HD<br/>Acc: 94.4%")):::model
         
-        IMG_USER[User Input<br/>Camera/Upload]:::user
-        CROP{Smart Tiling<br/>6-Views Strategy}:::serving
-        API[Inference API<br/>Dual Engine]:::serving
-        RES([Multi-Label Prediction]):::serving
+        IMG_USER["User Input<br/>Camera/Upload"]:::user
+        CROP{"Smart Tiling<br/>6-Views Strategy"}:::serving
+        API["Inference API<br/>Dual Engine"]:::serving
+        RES(["Multi-Label Prediction"]):::serving
 
         %% Flujo de Adaptación
         MODEL_STD -.->|Transfer Learning| FT
@@ -76,7 +76,7 @@ graph TD
         %% Flujo de Inferencia
         MODEL_HD -.->|Load Weights| API
         IMG_USER --> CROP
-        CROP -->|Batch 6x| API
+        CROP -->|"Batch 6x"| API
         API -->|Thresholding| RES
     end
 ```
