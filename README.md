@@ -21,6 +21,7 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ### Diagrama del Método (Mermaid)
 
+```mermaid
 graph TD
     %% --- ESTILOS VISUALES (PALETA PROFESIONAL) ---
     classDef data fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
@@ -78,6 +79,7 @@ graph TD
         CROP -->|Batch 6x| API
         API -->|Thresholding| RES
     end
+```
 
 ---
 
