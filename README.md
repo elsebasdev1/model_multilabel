@@ -21,27 +21,62 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ### Diagrama del Método (Mermaid)
 
-```mermaid
 graph TD
-    subgraph Phase 1: Data Prep
-        A[Raw Images] --> B[Upscaling 224x224]
-        B --> C[Normalization]
-        C --> D[(Numpy Tensors)]
+    %% --- ESTILOS VISUALES (PALETA PROFESIONAL) ---
+    classDef data fill:#e3f2fd,stroke:#1565c0,stroke-width:2px,color:#0d47a1;
+    classDef process fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c;
+    classDef model fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#1b5e20;
+    classDef serving fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#e65100;
+    classDef user fill:#212121,stroke:#000,stroke-width:2px,color:#fff;
+
+    %% --- FASE 1: INGENIERÍA DE DATOS ---
+    subgraph P1 [Phase 1: Data Engineering & ETL]
+        direction TB
+        RAW1[(CIFAR-10 Raw)]:::data
+        RAW2[(HD Dataset)]:::data
+        
+        STEP1[Upscaling Bicúbico<br/>(32px -> 224px)]:::process
+        STEP2[One-Hot Encoding]:::process
+        TENSORS[(Numpy Tensors)]:::data
+
+        RAW1 --> STEP1
+        RAW2 --> STEP1
+        STEP1 --> STEP2 --> TENSORS
     end
-    
-    subgraph Phase 2: Training SOTA
-        D --> E[ConvNeXt Base]
-        E --> F[MixUp Augmentation]
-        F --> G((Model CIFAR-10))
+
+    %% --- FASE 2: ENTRENAMIENTO SOTA ---
+    subgraph P2 [Phase 2: SOTA Training]
+        direction TB
+        ARCH[[ConvNeXt Base]]:::model
+        AUG[MixUp Augmentation<br/>alpha=0.2]:::process
+        OPT[AdamW + Mixed Precision]:::process
+        MODEL_STD((Model Standard<br/>Acc: 99.8%)):::model
+
+        TENSORS --> AUG
+        ARCH --> AUG
+        AUG --> OPT --> MODEL_STD
     end
-    
-    subgraph Phase 3: Domain Adaptation & Serving
-        G --> H[Fine-Tuning HD]
-        H --> I((Model HD))
-        J[User Image] --> K[Smart Tiling 6-Views]
-        K --> L[Inference Engine]
-        I --> L
-        L --> M[Prediction]
+
+    %% --- FASE 3: ADAPTACIÓN Y SERVING ---
+    subgraph P3 [Phase 3: Domain Adaptation & Production]
+        direction TB
+        FT[Fine-Tuning<br/>LR=1e-5 / Unfrozen]:::process
+        MODEL_HD((Model HD<br/>Acc: 94.4%)):::model
+        
+        IMG_USER[User Input<br/>Camera/Upload]:::user
+        CROP{Smart Tiling<br/>6-Views Strategy}:::serving
+        API[Inference API<br/>Dual Engine]:::serving
+        RES([Multi-Label Prediction]):::serving
+
+        %% Flujo de Adaptación
+        MODEL_STD -.->|Transfer Learning| FT
+        FT --> MODEL_HD
+
+        %% Flujo de Inferencia
+        MODEL_HD -.->|Load Weights| API
+        IMG_USER --> CROP
+        CROP -->|Batch 6x| API
+        API -->|Thresholding| RES
     end
 
 ---
