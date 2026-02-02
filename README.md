@@ -8,7 +8,7 @@
 ![MLflow](https://img.shields.io/badge/MLflow-Tracking-blue?style=for-the-badge&logo=mlflow)
 
 
-## 1. RESUMEN (ABSTRACT)
+## RESUMEN (ABSTRACT)
 **Problema:** Los modelos de clasificación de imágenes entrenados en datasets académicos de baja resolución (como CIFAR-10) sufren una degradación severa de rendimiento ("Domain Gap") cuando se aplican a imágenes del mundo real de alta definición.
 
 **Propuesta:** Se presenta un método en tres fases que utiliza una arquitectura **ConvNeXt Base**. Se implementa una estrategia de *Transfer Learning* inicial, seguida de una técnica de *Domain Adaptation* (Fine-Tuning) y un despliegue con estrategia de "Smart Tiling" para maximizar la detección de objetos pequeños.
@@ -19,7 +19,7 @@
 
 ---
 
-## 2. MÉTODO PROPUESTO
+## MÉTODO PROPUESTO
 La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia de datos estricto, dividido en tres fases macro: Ingeniería de Datos, Modelado SOTA y Adaptación de Dominio.
 
 ### Diagrama del Método (Mermaid)
@@ -192,3 +192,23 @@ Accede a la interfaz web en: http://localhost:8000
 │   └── 04_Domain_Adaptation.ipynb
 └── models/                # Pesos de los modelos (.keras)
 ```
+## 5. CONCLUSIONES
+
+Detectar múltiples objetos simultáneamente en entornos no controlados es un gran desafío; puede verse afectado drásticamente por la variabilidad en la resolución, oclusiones parciales y las diferencias de dominio entre los datos de entrenamiento y los del mundo real. Uno de los principales obstáculos en la investigación aplicada de visión artificial es la brecha de rendimiento ("Domain Gap") que existe al trasladar modelos entrenados en datasets académicos a producción.
+
+Por esta razón, hemos proporcionado un caso de estudio, una arquitectura de cuatro fases y un método de *Deep Learning* basado en **ConvNeXt** y **Adaptación de Dominio** para el procesamiento y análisis de imágenes HD, enfocado en la detección de clases específicas (Dog, Automobile, Bird).
+
+Hemos proporcionado un conjunto de experimentos utilizando un dataset público (CIFAR-10) y un dataset propietario de alta definición, utilizando medidas de calidad estándar (Accuracy, F1-Score) y la discusión de métodos de *Transfer Learning*. Los resultados demuestran que, mediante técnicas de *Fine-Tuning* y *Smart Tiling*, es posible elevar la precisión en el mundo real del 33% al 94.4%.
+
+Hemos proporcionado un conjunto de cuadernos (Notebooks) para la reproducibilidad de los experimentos y para el desarrollo de nuevos métodos a partir de este caso de estudio, cubriendo desde la ingeniería de datos hasta el despliegue en producción.
+
+Como trabajo futuro, consideramos, además de un enfoque inductivo, explorar un enfoque híbrido que añada inteligencia artificial deductiva apoyada en el modelado de conocimiento experto (reglas de contexto), con el fin de mejorar significativamente los resultados en escenarios con alta oclusión. Asimismo, pretendemos experimentar con técnicas modernas como *Ensemble Learning* combinando arquitecturas como Swin Transformer y EfficientNet para robustecer la inferencia.
+
+---
+
+## 6. REFERENCIAS
+
+1.  **Krizhevsky, Alex, and Geoffrey Hinton.** "Learning multiple layers of features from tiny images". (2009): 7. [Dataset CIFAR-10]. Recuperado de: https://www.cs.toronto.edu/~kriz/cifar.html
+2.  **Liu, Zhuang, et al.** "A ConvNet for the 2020s". *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*. (2022). DOI: https://doi.org/10.48550/arXiv.2201.03545
+3.  **Zhang, Hongyi, et al.** "mixup: Beyond Empirical Risk Minimization". *International Conference on Learning Representations (ICLR)*. (2018). DOI: https://doi.org/10.48550/arXiv.1710.09412
+4.  **Loshchilov, Ilya, and Frank Hutter.** "Decoupled Weight Decay Regularization" (AdamW). *International Conference on Learning Representations*. (2019). DOI: https://doi.org/10.48550/arXiv.1711.05101
