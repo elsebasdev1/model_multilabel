@@ -26,14 +26,14 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 graph LR
     subgraph FILA1[" "]
         direction LR
-        A1["<b>Fase 1: Ingeniería de Datos</b><br/><br/>1. Ingesta Datos CIFAR-10<br/>2. EDA: Análisis de Clases<br/>3. Upscaling 32→224px<br/>4. Normalización ConvNeXt"]
-        A2["<b>Fase 2: Modelado SOTA</b><br/><br/>1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Modelo Base 99%"]
+        A1["<b>Fase 1: Ingeniería de Datos</b><br/><br/>① Ingesta Datos CIFAR-10<br/>② EDA: Análisis de Clases<br/>③ Upscaling 32→224px<br/>④ Normalización ConvNeXt"]
+        A2["<b>Fase 2: Modelado SOTA</b><br/><br/>① Arq: ConvNeXt Base<br/>② MixUp Augmentation<br/>③ Optimizador: AdamW<br/>④ Modelo Base 99%"]
     end
     
     subgraph FILA2[" "]
         direction LR
-        B1["<b>Fase 3: Adaptación Dominio</b><br/><br/>1. Ingesta Dataset HD Real<br/>2. Corrección Etiquetas<br/>3. Fine-Tuning LR=1e-5<br/>4. Validación MLflow"]
-        B2["<b>Fase 4: Servicio & App</b><br/><br/>1. Interfaz PWA/Cámara<br/>2. Smart Tiling 6-Vistas<br/>3. Motor Dual Std/HD<br/>4. Despliegue Docker"]
+        B1["<b>Fase 3: Adaptación Dominio</b><br/><br/>① Ingesta Dataset HD Real<br/>② Corrección Etiquetas<br/>③ Fine-Tuning LR=1e-5<br/>④ Validación MLflow"]
+        B2["<b>Fase 4: Servicio & App</b><br/><br/>① Interfaz PWA/Cámara<br/>② Smart Tiling 6-Vistas<br/>③ Motor Dual Std/HD<br/>④ Despliegue Docker"]
     end
     
     A1 --> A2
