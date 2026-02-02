@@ -53,6 +53,29 @@ graph LR
     style FILA2 fill:none,stroke:none
 ```
 
+### Descripción de Algoritmos por Fase
+
+- **Phase 1 - Data Engineering & Preparation:** En esta fase, se desarrollan cinco pasos críticos para la preparación y transformación de los datos.
+    * **Step 1. Data Ingestion:** Se realiza la carga distribuida del dataset académico (CIFAR-10) y la ingesta del dataset propietario de alta definición (HD Real World).
+    * **Step 2. EDA & Cleaning:** Análisis estadístico de la distribución de clases para identificar desbalanceos y filtrado de muestras corruptas.
+    * **Step 3. Bicubic Upscaling:** Cada imagen de baja resolución ($32 \times 32$) es transformada mediante interpolación bicúbica a $224 \times 224$ píxeles para satisfacer los requisitos espaciales de la arquitectura ConvNeXt.
+    * **Step 4. Normalization:** Se aplica la estandarización de canales (media y desviación estándar de ImageNet) y la transformación de etiquetas a formato *One-Hot Encoding*.
+    * **Step 5. Serialization:** Persistencia de los tensores procesados en formato binario `.npy` para optimizar la velocidad de I/O durante el entrenamiento.
+
+- **Phase 2 - SOTA Model Training:** En esta fase se construye y entrena el modelo base para el aprendizaje de representaciones robustas.
+    * **Step 1. ConvNeXt Architecture Setup:** Instanciación del backbone **ConvNeXt Base** (88M parámetros) pre-entrenado en ImageNet, modificando la capa densa final para nuestro problema multi-label.
+    * **Step 2. MixUp Augmentation:** Implementación de la técnica de regularización *MixUp*, que genera muestras de entrenamiento sintéticas mediante la combinación lineal convexa de pares de imágenes y sus etiquetas ($x' = \lambda x_i + (1-\lambda)x_j$) con $\alpha=0.2$.
+    * **Step 3. Optimization Strategy:** Configuración del optimizador **AdamW** junto con *Mixed Precision Training* (FP16) para maximizar la eficiencia computacional en GPU.
+
+- **Phase 3 - Domain Adaptation (Fine-Tuning):** En esta fase se resuelve el problema de "Domain Gap" para adaptar el modelo al mundo real.
+    * **Step 1. Tensor Alignment:** Algoritmo de corrección automática que reordena los vectores de etiquetas del dataset HD para coincidir con la topología del modelo pre-entrenado.
+    * **Step 2. Continuous Training:** Ejecución de un ciclo de *Fine-Tuning* con una tasa de aprendizaje microscópica ($1e-5$) y capas descongeladas, permitiendo al modelo ajustar sus pesos a texturas de alta resolución sin olvidar el conocimiento previo (*Catastrophic Forgetting Mitigation*).
+    * **Step 3. MLflow Tracking:** Monitoreo en tiempo real de métricas de validación (AUC, Accuracy, Loss) para asegurar la convergencia estable.
+
+- **Phase 4 - Production & Serving:** Implementación de la lógica de inferencia para el usuario final.
+    * **Step 1. Smart Tiling Algorithm:** Estrategia de pre-procesamiento que recorta la imagen de entrada en 6 vistas estratégicas (Esquinas + Centro + Original) para mejorar el *Recall* en objetos pequeños.
+    * **Step 2. Dual Engine Selection:** Lógica de control que selecciona dinámicamente entre el modelo Standard y el modelo HD, ajustando el umbral de decisión (0.30 vs 0.50) según el contexto de la imagen.
+
 ---
 
 ## 📸 Demo & Interfaz
