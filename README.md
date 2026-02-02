@@ -23,56 +23,45 @@ La arquitectura de la solución se ha diseñado siguiendo un pipeline de ciencia
 
 ```mermaid
 flowchart TB
-    %% --- ESTILOS ACADÉMICOS (SOBRIO) ---
-    classDef container fill:#fff,stroke:#333,stroke-width:2px,color:#000;
-    classDef content fill:#fff,stroke:#000,stroke-width:1px,stroke-dasharray:0,text-align:left;
-    classDef invisible fill:none,stroke:none;
+    %% --- ESTILOS LIMPIOS ---
+    classDef content fill:#fff,stroke:#000,stroke-width:1px,text-align:left;
 
-    %% --- ESTRUCTURA DE FILAS ---
-    %% Usamos subgrafos invisibles para forzar la alineación
-    
-    subgraph ROW1 [ ]
+    %% --- FILA SUPERIOR (Fases 1 y 2) ---
+    subgraph TOP_ROW [ ]
         direction LR
-        style ROW1 fill:none,stroke:none
+        style TOP_ROW fill:none,stroke:none
 
-        %% === FASE 1 (ARRIBA IZQUIERDA) ===
-        subgraph P1 [Phase 1: Analysis & Data Engineering]
+        subgraph P1 ["Phase 1: Data Engineering"]
             direction TB
-            P1_CONTENT["1. Data Ingestion (CIFAR-10)<br/>2. EDA: Class Distribution Analysis<br/>3. Bicubic Upscaling (32px → 224px)<br/>4. Normalization (ConvNeXt Standard)<br/>5. Serialization to .npy format"]:::content
+            N1["1. Ingesta Datos (CIFAR-10)<br/>2. EDA: Análisis de Clases<br/>3. Upscaling (32px a 224px)<br/>4. Normalización ConvNeXt"]:::content
         end
 
-        %% === FASE 2 (ARRIBA DERECHA) ===
-        subgraph P2 [Phase 2: SOTA Modeling & Training]
+        subgraph P2 ["Phase 2: SOTA Training"]
             direction TB
-            P2_CONTENT["1. Architecture: ConvNeXt Base (Pre-trained)<br/>2. Strategy: Transfer Learning (Unfrozen)<br/>3. Regularization: MixUp Augmentation (α=0.2)<br/>4. Optimization: AdamW + Mixed Precision (FP16)<br/>5. Artifact: Base Model (99.8% Accuracy)"]:::content
+            N2["1. Arq: ConvNeXt Base<br/>2. MixUp Augmentation<br/>3. Optimizador: AdamW<br/>4. Output: Modelo Base 99%"]:::content
         end
     end
 
-    subgraph ROW2 [ ]
+    %% --- FILA INFERIOR (Fases 3 y 4) ---
+    subgraph BOT_ROW [ ]
         direction LR
-        style ROW2 fill:none,stroke:none
+        style BOT_ROW fill:none,stroke:none
 
-        %% === FASE 3 (ABAJO IZQUIERDA) ===
-        subgraph P3 [Phase 3: Domain Adaptation (Fine-Tuning)]
+        subgraph P3 ["Phase 3: Domain Adaptation"]
             direction TB
-            P3_CONTENT["1. Ingestion: Real-World HD Dataset<br/>2. Tensor Alignment: Fix Label Ordering<br/>3. Continuous Training: Fine-Tuning (LR=1e-5)<br/>4. Metric Tracking: MLflow Integration<br/>5. Result: Domain Gap Resolved (94.4% Acc)"]:::content
+            N3["1. Ingesta: Dataset HD Real<br/>2. Corrección de Etiquetas<br/>3. Fine-Tuning (LR=1e-5)<br/>4. Validación MLflow"]:::content
         end
 
-        %% === FASE 4 (ABAJO DERECHA) ===
-        subgraph P4 [Phase 4: Serving & Production]
+        subgraph P4 ["Phase 4: Serving & App"]
             direction TB
-            P4_CONTENT["1. Input Interface: PWA / Camera Access<br/>2. Pre-Processing: Smart Tiling (6-Views)<br/>3. Logic: Dual-Engine Selection (Std vs HD)<br/>4. Post-Processing: Dynamic Thresholding<br/>5. Deployment: Docker Container"]:::content
+            N4["1. Interfaz: PWA / Cámara<br/>2. Smart Tiling (6-Vistas)<br/>3. Motor Dual (Std vs HD)<br/>4. Despliegue: Docker"]:::content
         end
     end
 
-    %% --- CONEXIONES DE FLUJO ---
-    %% Flujo lógico entre fases
-    P1_CONTENT --> P2_CONTENT
-    P2_CONTENT --> P3_CONTENT
-    P3_CONTENT --> P4_CONTENT
-
-    %% Aplicar estilos de contenedor
-    class P1,P2,P3,P4 container;
+    %% --- FLUJO ---
+    N1 --> N2
+    N2 --> N3
+    N3 --> N4
 ```
 
 ---
