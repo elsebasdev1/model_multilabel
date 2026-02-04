@@ -1,6 +1,6 @@
 # 👁️ SOTA Multi-Label Visual Analysis System
 
-![Python](https://img.shields.io/badge/Python-3.16-blue?style=for-the-badge&logo=python)
+![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.17-orange?style=for-the-badge&logo=tensorflow)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688?style=for-the-badge&logo=fastapi)
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
