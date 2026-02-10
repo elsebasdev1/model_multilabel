@@ -1,3 +1,4 @@
+> 🌐 **Languages:** [Spanish](README_ES.md)
 # 👁️ SOTA Multi-Label Visual Analysis System
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
@@ -6,8 +7,6 @@
 ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success?style=for-the-badge)
 ![MLflow](https://img.shields.io/badge/MLflow-Tracking-blue?style=for-the-badge&logo=mlflow)
-
-> 🌐 **Languages:** [English](README.md) · [Español](README_ES.md)
 
 ## ABSTRACT
 **Problem:** Image classification models trained on low-resolution academic datasets (such as CIFAR-10) suffer from severe performance degradation ("Domain Gap") when applied to high-definition real-world images.
