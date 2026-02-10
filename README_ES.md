@@ -1,4 +1,5 @@
-# 👁️ SOTA Multi-Label Visual Analysis System
+> 🌐 **Cambiar idioma:** [Inglés](README.md)
+# 👁️ SOTA Sistema de Análisis Visual Multietiqueta
 
 ![Python](https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python)
 ![TensorFlow](https://img.shields.io/badge/TensorFlow-2.17-orange?style=for-the-badge&logo=tensorflow)
